@@ -1,37 +1,37 @@
-"use strict";
-exports.__esModule = true;
-var path = require("path");
-module.exports = function (plop) {
+import {CustomActionFunction, NodePlopAPI} from 'plop';
+import path = require("path");
+
+module.exports = function (plop: NodePlopAPI) {
   // starting prompt can be customized to display what you want
   // plop.setWelcomeMessage('[CUSTOM]'.yellow + ' What can I do for you?');
+
   // helpers are passed through handlebars syntax and made
   // available for use in the generator templates
+
   // adds 4 dashes around some text (yes es6/es2015 is supported)
-  plop.addHelper("dashAround", function (text) {
-    return "---- " + text + " ----";
-  });
+  plop.setHelper("dashAround", (text: string) => "---- " + text + " ----");
+
   // formats an array of options like you would write
   // it, if you were speaking (one, two, and three)
-  plop.addHelper("wordJoin", function (words) {
+  plop.setHelper("wordJoin", function (words: string[]) {
     return words.join(", ").replace(/(:?.*),/, "$1, and");
   });
-  plop.addHelper("absPath", function (p) {
+
+  plop.setHelper("absPath", function (p: string) {
     return path.resolve(plop.getPlopfilePath(), p);
   });
+
   // greet the user using a partial
-  plop.addPartial(
+  plop.setPartial(
     "salutation",
     "{{ greeting }}, my name is {{ properCase name }} and I am {{ age }}."
   );
-  var delayLog = function (msg) {
-    return function () {
-      return new Promise(function (resolve) {
-        setTimeout(function () {
-          return resolve(msg);
-        }, 1000);
-      });
-    };
-  };
+
+  const delayLog = (msg: string): CustomActionFunction => () =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(msg), 1000);
+    });
+
   // setGenerator creates a generator that can be run with "plop generatorName"
   plop.setGenerator("test", {
     description: "this is a test",
@@ -73,7 +73,7 @@ module.exports = function (plop) {
       },
     ],
     actions: [
-      "this is a comment",
+      `this is a comment`,
       "this is another comment",
       delayLog("delayed thing"),
       delayLog("another delayed thing"),
@@ -89,6 +89,7 @@ module.exports = function (plop) {
         // this allows this action to work even when the generator is
         // executed from inside a subdirectory
         process.chdir(plop.getPlopfilePath());
+
         // custom function can be synchronous or async (by returning a promise)
         var fs = require("fs");
         var existsMsg = "psst {{name}}, change-me.txt already exists";
@@ -96,9 +97,11 @@ module.exports = function (plop) {
         var changeFileName = "change-me.txt";
         var changeFilePath =
           plop.getDestBasePath() + "/folder/" + changeFileName;
+
         // you can use plop.renderString to render templates
         existsMsg = plop.renderString(existsMsg, answers);
         copiedMsg = plop.renderString(copiedMsg, answers);
+
         if (fs.existsSync(changeFilePath)) {
           // returned value shows up in the console
           return existsMsg;
@@ -132,7 +135,7 @@ module.exports = function (plop) {
       {
         type: "modify",
         path: "folder/change-me.txt",
-        skip: function (data) {
+        skip(data: any) {
           if (!data.toppings.includes("mushroom")) {
             // Skip this action
             return "Skipped replacing mushrooms";
@@ -141,14 +144,16 @@ module.exports = function (plop) {
             return;
           }
         },
-        transform: function (fileContents, data) {
+        transform(fileContents: string, data: string) {
           return fileContents.replace(/mushrooms/g, "pepperoni");
         },
       },
     ],
   });
+
   // adding a custom inquirer prompt type
   plop.addPrompt("directory", require("inquirer-directory"));
+
   plop.setGenerator("custom-prompt", {
     description: "custom inquirer prompt example",
     prompts: [
@@ -176,6 +181,7 @@ module.exports = function (plop) {
       },
     ],
   });
+
   // test with dynamic actions, regarding responses to prompts
   plop.setGenerator("dynamic actions", {
     description: "another test using an actions function",
@@ -206,6 +212,7 @@ module.exports = function (plop) {
           abortOnFail: true,
         },
       ];
+
       return actions;
     },
   });

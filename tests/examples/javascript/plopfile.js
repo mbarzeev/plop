@@ -10,20 +10,20 @@ export default function (plop) {
   // available for use in the generator templates
 
   // adds 4 dashes around some text (yes es6/es2015 is supported)
-  plop.addHelper("dashAround", (text) => "---- " + text + " ----");
+  plop.setHelper("dashAround", (text) => "---- " + text + " ----");
 
   // formats an array of options like you would write
   // it, if you were speaking (one, two, and three)
-  plop.addHelper("wordJoin", function (words) {
+  plop.setHelper("wordJoin", function (words) {
     return words.join(", ").replace(/(:?.*),/, "$1, and");
   });
 
-  plop.addHelper("absPath", function (p) {
+  plop.setHelper("absPath", function (p) {
     return path.resolve(plop.getPlopfilePath(), p);
   });
 
   // greet the user using a partial
-  plop.addPartial(
+  plop.setPartial(
     "salutation",
     "{{ greeting }}, my name is {{ properCase name }} and I am {{ age }}."
   );

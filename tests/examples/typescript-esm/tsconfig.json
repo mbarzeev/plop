@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    // Required
+    "module": "es2022",
+    "esModuleInterop": true,
+    // Not required
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "plop": ["../../../src/plop.d.ts"]
+    }
+  }
+}
